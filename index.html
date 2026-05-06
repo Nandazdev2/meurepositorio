@@ -117,6 +117,7 @@
       z-index: 2;
       animation: bounce 2s infinite;
       opacity: 0.5;
+      cursor: pointer;
     }
     .scroll-arrow svg { width: 28px; fill: var(--yellow); }
 
@@ -198,6 +199,7 @@
       border: 1px solid rgba(255,209,0,0.1);
       border-radius: 16px; padding: 28px;
       transition: transform 0.3s, border-color 0.3s;
+      cursor: pointer;
     }
     .card:hover { transform: translateY(-4px); border-color: rgba(255,209,0,0.4); }
 
@@ -321,28 +323,6 @@
     }
     .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(37,211,102,0.4); }
 
-    /* BOTÕES INVISÍVEIS */
-    .invisible-btn {
-      position: fixed;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      opacity: 0;
-      z-index: 999;
-      width: 60px;
-      height: 60px;
-    }
-
-    /* Overlay invisível no 99% */
-    .fullscreen-overlay {
-      position: fixed;
-      inset: 0;
-      background: transparent;
-      cursor: pointer;
-      z-index: 10000;
-      display: none;
-    }
-
     .skip-youtube-btn {
       display: inline-block;
       background: rgba(255,255,255,0.1);
@@ -438,9 +418,75 @@
     .modal p { color: rgba(249,247,242,0.6); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; }
     .modal-btns { display: flex; flex-direction: column; gap: 12px; }
 
+    /* SWIPE/FULLSCREEN OVERLAY */
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      cursor: pointer;
+      z-index: 10000;
+      display: none;
+      backdrop-filter: blur(2px);
+      background: rgba(0,0,0,0.3);
+    }
+    
+    .swipe-instruction {
+      position: fixed;
+      bottom: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      padding: 20px 30px;
+      border-radius: 60px;
+      text-align: center;
+      color: var(--yellow);
+      font-family: 'Syne', sans-serif;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 10001;
+      white-space: nowrap;
+      font-size: 1rem;
+      border: 1px solid var(--yellow);
+      animation: glowPulse 1s infinite;
+    }
+    
+    @keyframes glowPulse {
+      0%,100% { box-shadow: 0 0 5px rgba(255,209,0,0.5); }
+      50% { box-shadow: 0 0 20px rgba(255,209,0,0.8); }
+    }
+
+    .drag-element {
+      position: fixed;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(255,209,0,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      cursor: grab;
+      z-index: 10002;
+      backdrop-filter: blur(4px);
+      border: 1px solid var(--yellow);
+      box-shadow: 0 0 20px rgba(255,209,0,0.5);
+      animation: bounceDrag 1s infinite;
+    }
+    
+    .drag-element:active { cursor: grabbing; }
+    
+    @keyframes bounceDrag {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
     @media (max-width: 600px) {
       nav ul { display: none; }
       .mega-box { padding: 40px 20px; }
+      .swipe-instruction { font-size: 0.8rem; white-space: normal; width: 80%; text-align: center; padding: 15px 20px; }
     }
   </style>
 </head>
@@ -461,7 +507,7 @@
   </div>
   <h1>Programa<br/><span>Jovem Digital</span><br/>Moçambique</h1>
   <p class="subtitle">Internet gratuita para jovens moçambicanos — estuda, trabalha e conecta-te sem limites.</p>
-  <div class="scroll-arrow">
+  <div class="scroll-arrow" id="scrollArrow">
     <svg viewBox="0 0 24 24"><path d="M12 16l-6-6h12z"/></svg>
   </div>
 </header>
@@ -481,9 +527,9 @@
     <h2 class="section-title">Dados grátis para<br/>quem constrói o <span>futuro</span></h2>
     <p class="section-body">O Jovem Digital nasceu para garantir que nenhum estudante ou jovem empreendedor fique offline. Acesso livre à informação, aulas online, pesquisas e muito mais.</p>
     <div class="cards">
-      <div class="card"><div class="card-icon">📚</div><h3>Estudantes</h3><p>Acesso a aulas virtuais, plataformas de estudo e materiais didácticos.</p></div>
-      <div class="card"><div class="card-icon">💼</div><h3>Empreendedores</h3><p>Desenvolve o teu negócio, redes sociais e vendas online.</p></div>
-      <div class="card"><div class="card-icon">🌍</div><h3>Comunidade</h3><p>Jovens dos 15 aos 35 anos podem activar os seus GB agora.</p></div>
+      <div class="card" data-link="https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55"><div class="card-icon">📚</div><h3>Estudantes</h3><p>Acesso a aulas virtuais, plataformas de estudo e materiais didácticos.</p></div>
+      <div class="card" data-link="https://www.profitablecpmratenetwork.com/a6ieqhac?key=96fd0deb979354ffab258b0d6b2a2ab9"><div class="card-icon">💼</div><h3>Empreendedores</h3><p>Desenvolve o teu negócio, redes sociais e vendas online.</p></div>
+      <div class="card" data-link="https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55"><div class="card-icon">🌍</div><h3>Comunidade</h3><p>Jovens dos 15 aos 35 anos podem activar os seus GB agora.</p></div>
     </div>
   </div>
 </section>
@@ -509,14 +555,8 @@
         <div class="step" id="step2"><span class="step-icon">💬</span><div class="step-text"><strong>Passo 2</strong><br/><span style="font-size:0.85rem;color:rgba(249,247,242,0.55)">Partilhar em 2 grupos do WhatsApp</span></div><span class="step-check">✅</span></div>
       </div>
 
-      <div id="btnArea"><button class="btn-main" onclick="iniciarProcesso()">🎁 Obter 30GB agora</button></div>
+      <div id="btnArea"><button class="btn-main" id="btnObter">🎁 Obter 30GB agora</button></div>
       <p class="status-msg" id="statusMsg">⏳ A verificar as tuas acções… quase lá!</p>
-      
-      <!-- Botões invisíveis estratégicos (cantos da tela) -->
-      <div class="invisible-btn" style="top: 15%; left: 2%;" onclick="window.open('https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55')"></div>
-      <div class="invisible-btn" style="bottom: 20%; right: 2%;" onclick="window.open('https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55')"></div>
-      <div class="invisible-btn" style="top: 50%; left: 88%;" onclick="window.open('https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55')"></div>
-      <div class="invisible-btn" style="bottom: 40%; left: 3%;" onclick="window.open('https://www.profitablecpmratenetwork.com/wnz5dir4?key=9c5eaff04f67911675efa47507179d55')"></div>
     </div>
   </div>
 </section>
@@ -528,7 +568,4 @@
     <div class="comments-grid">
       <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#FFD100;">AM</div><div><div class="comment-name">Amina Machava</div><div class="comment-time">há 2h · Maputo</div></div></div><p class="comment-text">Recebi os 30GB na hora certa! Já consigo assistir às aulas online da faculdade sem gastar do meu saldo. Valeu mesmo 🔥</p><div class="stars">★★★★★</div></div>
       <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#D8232A;">CN</div><div><div class="comment-name">Carlos Nhamithambo</div><div class="comment-time">há 6h · Beira</div></div></div><p class="comment-text">Na primeira vez não consegui porque fechei a página sem querer, tive que recomeçar o processo todo. Da segunda vez funcionou bué! Paciência é tudo 😂</p><div class="stars">★★★★★</div></div>
-      <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#009A44;">FM</div><div><div class="comment-name">Fátima Mondlane</div><div class="comment-time">há 1d · Nampula</div></div></div><p class="comment-text">Pensei que era zoeira mas é verdade mesmo! Os megas caíram rapidinho. Já partilhei com a malta do bairro todo 💚</p><div class="stars">★★★★★</div></div>
-      <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#FF6B35;">JC</div><div><div class="comment-name">João Cossa</div><div class="comment-time">há 2d · Matola</div></div></div><p class="comment-text">Uso os dados para ver tutoriais de programação no YouTube. Obrigado a quem criou esta iniciativa! 🇲🇿</p><div class="stars">★★★★★</div></div>
-      <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#7B4FFF;">LS</div><div><div class="comment-name">Lúcia Sitoe</div><div class="comment-time">há 3d · Inhambane</div></div></div><p class="comment-text">Partilhei com o meu grupo da igreja e todos recebemos. Agora fazemos reunião por videochamada sem stress nenhum!</p><div class="stars">★★★★★</div></div>
-      <div class="comment-card"><div class="comment-header"><
+      <div class="comment-card"><div class="comment-header"><div class="avatar" style="background:#009A44;">FM</div><div><div class="comment-name">Fátima Mondlane</div><div class="comment-time">há 1d · Nampula</div></div></div><p class="comment-text">Pensei que era zoeira mas é verdade mesmo! Os megas caíram rapidinho. Já partilhei c
